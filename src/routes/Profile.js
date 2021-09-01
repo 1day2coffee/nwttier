@@ -1,3 +1,4 @@
 import React from "react";
 
-export default () => <span>Profile</span>
+const React = () => <span>Profile</span>;
+export default React;
