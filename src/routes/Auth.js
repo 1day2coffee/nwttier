@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {authService, firebaseInstance } from "fBase";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import firebaseAuth from 'firebase/auth/dist/index.esm';
 
 const Auth = () => {
   const [email, setEmail] = useState("");
@@ -40,7 +41,7 @@ const Auth = () => {
     const {
       target: { name },
     } = event;
-    let provider;
+    var provider;
     if (name === "google") {
       provider = new firebaseInstance.auth.GoogleAuthProvider();
     } else if (name === "github") {
