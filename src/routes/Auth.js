@@ -1,7 +1,10 @@
 import React, { useState } from "react";
-import {authService, firebaseInstance } from "fBase";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import firebaseAuth from 'firebase/auth/dist/index.esm';
+import { authService, firebaseInstance } from "fBase";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import firebaseAuth from "firebase/auth/dist/index.esm";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
@@ -23,16 +26,24 @@ const Auth = () => {
   const onSubmit = async (event) => {
     event.preventDefault();
     try {
-        let data;
-        if(newAccount) {
-            const data = await createUserWithEmailAndPassword(authService, email, password);
-            } else {
-            const data = await signInWithEmailAndPassword(authService, email, password);
-            }
-        console.log(data);
-      } catch (error) {
-        setError(error.meassage);
+      let data;
+      if (newAccount) {
+        const data = await createUserWithEmailAndPassword(
+          authService,
+          email,
+          password
+        );
+      } else {
+        const data = await signInWithEmailAndPassword(
+          authService,
+          email,
+          password
+        );
       }
+      console.log(data);
+    } catch (error) {
+      setError(error.meassage);
+    }
   };
 
   const toggleAccount = () => setNewAccount((prev) => !prev);
@@ -50,7 +61,6 @@ const Auth = () => {
     const data = await authService.signInWithPopup(provider);
     console.log(data);
   };
-
 
   return (
     <div>
@@ -82,10 +92,10 @@ const Auth = () => {
       </span>
       <div>
         <button onClick={onSocialClick} name="google">
-            Continue with Google
+          Continue with Google
         </button>
         <button onClick={onSocialClick} name="github">
-            Continue with Github
+          Continue with Github
         </button>
       </div>
     </div>
