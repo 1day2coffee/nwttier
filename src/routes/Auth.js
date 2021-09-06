@@ -3,6 +3,10 @@ import { authService, firebaseInstance } from "fBase";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+  GithubAuthProvider,
+  getAuth,
 } from "firebase/auth";
 import firebaseAuth from "firebase/auth/dist/index.esm";
 
@@ -52,15 +56,38 @@ const Auth = () => {
     const {
       target: { name },
     } = event;
-    var provider;
+    const auth = getAuth();
+
+    const providerGoogle = new GoogleAuthProvider();
+    const providerGithub = new GithubAuthProvider();
+
     if (name === "google") {
-      provider = new firebaseInstance.auth.GoogleAuthProvider();
+      signInWithPopup(auth, providerGoogle).then((result) => {
+        let credential = GoogleAuthProvider.credentialFromResult(result);
+        let token = credential.accessToken;
+        let user = result.user;
+      }).catch((error) => {
+
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        const email = error.email;
+        const credential = GithubAuthProvider.credentialFromError(error);
+      });
     } else if (name === "github") {
-      provider = new firebaseInstance.auth.GithubAuthProvider();
+      signInWithPopup(auth, providerGithub).then((result) => {
+        let credential = GithubAuthProvider.credentialFromResult(result);
+        let token = credential.accessToken;
+        let user = result.user;
+      }).catch((error) => {
+
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        const email = error.email;
+        const credential = GithubAuthProvider.credentialFromError(error);
+      });;
     }
-    const data = await authService.signInWithPopup(provider);
-    console.log(data);
   };
+
 
   return (
     <div>
@@ -101,4 +128,5 @@ const Auth = () => {
     </div>
   );
 };
+
 export default Auth;
