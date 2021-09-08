@@ -9,18 +9,17 @@ import {
   onSnapshot,
   orderBy,
   query,
-  where,
 } from "firebase/firestore";
+import { getDownloadURL, ref, uploadString } from "@firebase/storage";
 
 const Home = ({ userObj }) => {
   const [nweet, setNweet] = useState("");
   const [nweets, setNweets] = useState([]);
-  const [attachment, setAttachment] = useState();
+  const [attachment, setAttachment] = useState("");
 
   useEffect(() => {
     const q = query(
       collection(getFirestore(), "nweets"),
-      // where('text', '==', 'hehe') // where뿐만아니라 각종 조건 이 영역에 때려부우면 됨
       orderBy("createdAt")
     );
 
@@ -42,18 +41,29 @@ const Home = ({ userObj }) => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const fileRef = storageService.ref().child(`${userObj.uid}/${uuidv4()}`);
-      const response = await fileRef.putString(attachment, "data_url");
-      console.log(response);
-      // const docRef = await addDoc(collection(dbService, "nweets"), {
-      //   text: nweet,
-      //   createdAt: Date.now(),
-      //   creatorId: userObj.uid,
-      // });
-    } catch (error) {}
+    let attachmentUrl = "";
+    if (attachment !== "") {
+      const attachmentRef = ref(storageService, `${userObj.uid}/${uuidv4()}`);
 
-     setNweet("");
+      const message4 =
+        "data:text/plain;base64,5b6p5Y+344GX44G+44GX44Gf77yB44GK44KB44Gn44Go44GG77yB";
+      const response = uploadString(attachmentRef, message4, "data_url").then(
+        (snapshot) => {
+          console.log("Uploaded a data_url string!");
+          attachmentUrl = getDownloadURL(ref(storageService, snapshot));
+        }
+      );
+    }
+    const nweetObj = {
+      text: nweet,
+      createdAt: Date.now(),
+      creatorId: userObj.uid,
+      attachmentUrl,
+    };
+
+    await addDoc(collection(dbService, "nweets"), nweetObj);
+    setNweet("");
+    setAttachment("");
   };
 
   const onChange = (event) => {

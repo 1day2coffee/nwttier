@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { authService, firebaseInstance } from "fBase";
+import { authService } from "fBase";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -8,7 +8,6 @@ import {
   GithubAuthProvider,
   getAuth,
 } from "firebase/auth";
-import firebaseAuth from "firebase/auth/dist/index.esm";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
@@ -32,17 +31,13 @@ const Auth = () => {
     try {
       let data;
       if (newAccount) {
-        const data = await createUserWithEmailAndPassword(
+        data = await createUserWithEmailAndPassword(
           authService,
           email,
           password
         );
       } else {
-        const data = await signInWithEmailAndPassword(
-          authService,
-          email,
-          password
-        );
+        data = await signInWithEmailAndPassword(authService, email, password);
       }
       console.log(data);
     } catch (error) {
@@ -62,32 +57,23 @@ const Auth = () => {
     const providerGithub = new GithubAuthProvider();
 
     if (name === "google") {
-      signInWithPopup(auth, providerGoogle).then((result) => {
-        let credential = GoogleAuthProvider.credentialFromResult(result);
-        let token = credential.accessToken;
-        let user = result.user;
-      }).catch((error) => {
-
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        const email = error.email;
-        const credential = GithubAuthProvider.credentialFromError(error);
-      });
+      signInWithPopup(auth, providerGoogle)
+        .then((result) => {
+          console.log(result);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     } else if (name === "github") {
-      signInWithPopup(auth, providerGithub).then((result) => {
-        let credential = GithubAuthProvider.credentialFromResult(result);
-        let token = credential.accessToken;
-        let user = result.user;
-      }).catch((error) => {
-
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        const email = error.email;
-        const credential = GithubAuthProvider.credentialFromError(error);
-      });;
+      signInWithPopup(auth, providerGithub)
+        .then((result) => {
+          console.log(result);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   };
-
 
   return (
     <div>
