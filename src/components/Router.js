@@ -7,6 +7,7 @@ import Profile from "routes/Profile";
 
 const AppRouter = ({ refreshUser, isLoggedIn, userObj }) => {
   return (
+    
     <Router>
       {isLoggedIn && <Navigation userObj={userObj} />}
       <Switch>
