@@ -17,16 +17,9 @@ const NweetFactory = ({ userObj }) => {
     e.preventDefault();
     let attachmentUrl = "";
     if (attachment !== "") {
-      const attachmentRef = ref(storageService, `${userObj.uid}/${uuidv4()}`);
-
-      const message4 =
-        "data:text/plain;base64,5b6p5Y+344GX44G+44GX44Gf77yB44GK44KB44Gn44Go44GG77yB";
-      const response = uploadString(attachmentRef, message4, "data_url").then(
-        (snapshot) => {
-          console.log("Uploaded a data_url string!");
-          attachmentUrl = getDownloadURL(ref(storageService, snapshot));
-        }
-      );
+      const fileRef = ref(storageService, `${userObj.uid}/${uuidv4()}`);
+      const uploadFile = await uploadString(fileRef, attachment, "data_url");
+      attachmentUrl = await getDownloadURL(uploadFile.ref);
     }
     const nweetObj = {
       text: nweet,
