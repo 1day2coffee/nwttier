@@ -1,57 +1,19 @@
-import React, { useState } from "react";
-import { authService, firebaseInstance } from "fBase";
+import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
+  faTwitter,
+  faGoogle,
+  faGithub,
+} from "@fortawesome/free-brands-svg-icons";
+import {
   signInWithPopup,
   GoogleAuthProvider,
   GithubAuthProvider,
   getAuth,
 } from "firebase/auth";
-import firebaseAuth from "firebase/auth/dist/index.esm";
+import AuthForm from "components/AuthForm";
 
 const Auth = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [newAccount, setNewAccount] = useState(true);
-  const [error, setError] = useState("");
-
-  const onChange = (event) => {
-    const {
-      target: { name, value },
-    } = event;
-    if (name === "email") {
-      setEmail(value);
-    } else if (name === "password") {
-      setPassword(value);
-    }
-  };
-
-  const onSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      let data;
-      if (newAccount) {
-        const data = await createUserWithEmailAndPassword(
-          authService,
-          email,
-          password
-        );
-      } else {
-        const data = await signInWithEmailAndPassword(
-          authService,
-          email,
-          password
-        );
-      }
-      console.log(data);
-    } catch (error) {
-      setError(error.meassage);
-    }
-  };
-
-  const toggleAccount = () => setNewAccount((prev) => !prev);
-
   const onSocialClick = async (event) => {
     const {
       target: { name },
@@ -62,67 +24,39 @@ const Auth = () => {
     const providerGithub = new GithubAuthProvider();
 
     if (name === "google") {
-      signInWithPopup(auth, providerGoogle).then((result) => {
-        let credential = GoogleAuthProvider.credentialFromResult(result);
-        let token = credential.accessToken;
-        let user = result.user;
-      }).catch((error) => {
-
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        const email = error.email;
-        const credential = GithubAuthProvider.credentialFromError(error);
-      });
+      signInWithPopup(auth, providerGoogle)
+        .then((result) => {
+          console.log(result);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     } else if (name === "github") {
-      signInWithPopup(auth, providerGithub).then((result) => {
-        let credential = GithubAuthProvider.credentialFromResult(result);
-        let token = credential.accessToken;
-        let user = result.user;
-      }).catch((error) => {
-
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        const email = error.email;
-        const credential = GithubAuthProvider.credentialFromError(error);
-      });;
+      signInWithPopup(auth, providerGithub)
+        .then((result) => {
+          console.log(result);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     }
   };
 
-
   return (
-    <div>
-      <form onSubmit={onSubmit}>
-        <input
-          name="email"
-          type="email"
-          placeholder="Email"
-          required
-          value={email}
-          onChange={onChange}
-        />
-        <input
-          name="password"
-          type="password"
-          placeholder="Password"
-          required
-          value={password}
-          onChange={onChange}
-        />
-        <input
-          type="submit"
-          value={newAccount ? "Create Account" : "Sign In"}
-        />
-        {error}
-      </form>
-      <span onClick={toggleAccount}>
-        {newAccount ? "Sign In" : "Create Account"}
-      </span>
-      <div>
-        <button onClick={onSocialClick} name="google">
-          Continue with Google
+    <div className="authContainer">
+      <FontAwesomeIcon
+        icon={faTwitter}
+        color={"#04AAFF"}
+        size="3x"
+        style={{ marginBottom: 30 }}
+      />
+      <AuthForm />
+      <div className="authBtns">
+        <button onClick={onSocialClick} name="google" className="authBtn">
+          Continue with Google <FontAwesomeIcon icon={faGoogle} />
         </button>
-        <button onClick={onSocialClick} name="github">
-          Continue with Github
+        <button onClick={onSocialClick} name="github" className="authBtn">
+          Continue with Github <FontAwesomeIcon icon={faGithub} />
         </button>
       </div>
     </div>
